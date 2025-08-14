@@ -3,6 +3,7 @@ import { WeatherAPI, getStoredApiKey, removeApiKey } from '@/lib/weather-api';
 import { CurrentWeather, WeatherForecast } from '@/types/weather';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import ApiKeyInput from './ApiKeyInput';
 import CurrentWeatherCard from './CurrentWeatherCard';
 import ForecastCard from './ForecastCard';
@@ -36,6 +37,34 @@ const WeatherDashboard: React.FC = () => {
     }
   }, [apiKey, currentLocation]);
 
+  const saveWeatherSearch = async (weatherData: CurrentWeather, uvIndex: number | null = null) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('User not authenticated, skipping weather search save');
+        return;
+      }
+
+      await supabase.from('weather_searches').insert({
+        user_id: user.id,
+        location_name: currentLocation?.name || weatherData.name,
+        latitude: weatherData.coord.lat,
+        longitude: weatherData.coord.lon,
+        temperature: weatherData.main.temp,
+        humidity: weatherData.main.humidity,
+        pressure: weatherData.main.pressure,
+        weather_description: weatherData.weather[0].description,
+        weather_icon: weatherData.weather[0].icon,
+        feels_like: weatherData.main.feels_like,
+        wind_speed: weatherData.wind.speed,
+        visibility: weatherData.visibility,
+        uv_index: uvIndex
+      });
+    } catch (error) {
+      console.error('Error saving weather search:', error);
+    }
+  };
+
   const loadWeatherData = async () => {
     if (!apiKey || !currentLocation) return;
 
@@ -43,13 +72,17 @@ const WeatherDashboard: React.FC = () => {
     try {
       const weatherAPI = new WeatherAPI(apiKey);
       
-      const [weatherData, forecastData] = await Promise.all([
+      const [weatherData, forecastData, uvData] = await Promise.all([
         weatherAPI.getCurrentWeather(currentLocation.lat, currentLocation.lon),
-        weatherAPI.getForecast(currentLocation.lat, currentLocation.lon)
+        weatherAPI.getForecast(currentLocation.lat, currentLocation.lon),
+        weatherAPI.getUVIndex(currentLocation.lat, currentLocation.lon).catch(() => null)
       ]);
 
       setCurrentWeather(weatherData);
       setForecast(forecastData);
+      
+      // Save weather search to database
+      await saveWeatherSearch(weatherData, uvData?.value || null);
       
       toast({
         title: "Weather Updated",

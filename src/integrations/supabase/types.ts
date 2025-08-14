@@ -83,6 +83,66 @@ export type Database = {
         }
         Relationships: []
       }
+      weather_searches: {
+        Row: {
+          created_at: string
+          feels_like: number
+          humidity: number
+          id: string
+          latitude: number
+          location_name: string
+          longitude: number
+          pressure: number
+          searched_at: string
+          temperature: number
+          updated_at: string
+          user_id: string
+          uv_index: number | null
+          visibility: number
+          weather_description: string
+          weather_icon: string
+          wind_speed: number
+        }
+        Insert: {
+          created_at?: string
+          feels_like: number
+          humidity: number
+          id?: string
+          latitude: number
+          location_name: string
+          longitude: number
+          pressure: number
+          searched_at?: string
+          temperature: number
+          updated_at?: string
+          user_id: string
+          uv_index?: number | null
+          visibility: number
+          weather_description: string
+          weather_icon: string
+          wind_speed: number
+        }
+        Update: {
+          created_at?: string
+          feels_like?: number
+          humidity?: number
+          id?: string
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          pressure?: number
+          searched_at?: string
+          temperature?: number
+          updated_at?: string
+          user_id?: string
+          uv_index?: number | null
+          visibility?: number
+          weather_description?: string
+          weather_icon?: string
+          wind_speed?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
