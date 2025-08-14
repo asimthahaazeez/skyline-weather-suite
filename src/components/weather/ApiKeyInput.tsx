@@ -10,7 +10,7 @@ interface ApiKeyInputProps {
 }
 
 const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onApiKeySet }) => {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState('d5564714bc08293e281127f1bff7af76');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
