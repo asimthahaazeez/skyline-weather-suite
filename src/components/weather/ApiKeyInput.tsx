@@ -37,7 +37,7 @@ const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onApiKeySet }) => {
           </div>
           <div>
             <CardTitle className="text-2xl font-bold bg-gradient-sky bg-clip-text text-transparent">
-              Weather Dashboard
+              Weather Forecast
             </CardTitle>
             <CardDescription className="text-muted-foreground mt-2">
               Enter your OpenWeatherMap API key to access comprehensive weather data
